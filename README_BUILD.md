@@ -10,7 +10,7 @@
 
 2. **Push this project folder to your repo:**
    ```powershell
-   cd "c:\Joydeep\Learnings\GenAI\Myapps\Expenses\reference"
+   cd "c:\path\to\Expenses"
    git init
    git add .
    git commit -m "Initial commit"
@@ -47,7 +47,7 @@
 
 2. **Open Ubuntu in WSL2**, navigate to the project:
    ```bash
-   cd /mnt/c/Joydeep/Learnings/GenAI/Myapps/Expenses/reference
+   cd /mnt/c/path/to/Expenses
    chmod +x build_apk_wsl.sh
    ./build_apk_wsl.sh
    ```
@@ -74,7 +74,7 @@
 # Upload your project files using the Files panel on the left,
 # then run buildozer from that directory:
 import os
-os.chdir('/content/reference')  # adjust path
+os.chdir('/content/Expenses')  # adjust path
 !buildozer -v android debug
 ```
 
