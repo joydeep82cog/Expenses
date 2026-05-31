@@ -109,8 +109,8 @@ class ParticipantsScreen(Screen):
         box = self.ids.participants_list
         box.clear_widgets()
         for p in self.participants:
-            lbl = Label(text=p, color=(0.96, 0.96, 0.86, 1), font_size=sp(20),
-                        size_hint_y=None, height=dp(44))
+            lbl = Label(text=p, color=(0.96, 0.96, 0.86, 1), font_size=sp(22),
+                        size_hint_y=None, height=dp(56))
             box.add_widget(lbl)
 
     def load_trip(self):
@@ -131,9 +131,9 @@ class ParticipantsScreen(Screen):
         if not files:
             outer.add_widget(Label(
                 text='No archived trips found.\nArchive a trip first using\n"Settle & Archive".',
-                color=(0.96, 0.96, 0.86, 1), font_size=sp(20),
+                color=(0.96, 0.96, 0.86, 1), font_size=sp(22),
                 bold=True, halign='center', valign='middle',
-                size_hint_y=None, height=dp(140)
+                size_hint_y=None, height=dp(160)
             ))
         else:
             scroll = ScrollView(size_hint=(1, 1))
@@ -177,12 +177,12 @@ class ParticipantsScreen(Screen):
 
             for fname in files:
                 fp = os.path.join(TRIP_ARCHIVE_DIR, fname)
-                row = BoxLayout(orientation='horizontal', size_hint_y=None, height=dp(64), spacing=dp(10))
+                row = BoxLayout(orientation='horizontal', size_hint_y=None, height=dp(76), spacing=dp(10))
 
                 name_lbl = Button(
                     text=f'  {os.path.splitext(fname)[0]}',
                     background_normal='', background_color=(0.22, 0.27, 0.32, 1),
-                    color=(0.96, 0.96, 0.86, 1), font_size=sp(18), bold=True,
+                    color=(0.96, 0.96, 0.86, 1), font_size=sp(20), bold=True,
                     halign='left', valign='middle', size_hint_x=0.56
                 )
                 name_lbl.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
@@ -191,14 +191,14 @@ class ParticipantsScreen(Screen):
                 load_btn = Button(
                     text='Load', size_hint_x=0.22,
                     background_normal='', background_color=(0.95, 0.6, 0.1, 1),
-                    color=(0.1, 0.1, 0.1, 1), font_size=sp(17), bold=True
+                    color=(0.1, 0.1, 0.1, 1), font_size=sp(19), bold=True
                 )
                 load_btn.bind(on_release=make_load_fn(fp, popup_ref))
 
                 del_btn = Button(
                     text='Delete', size_hint_x=0.22,
                     background_normal='', background_color=(0.82, 0.18, 0.18, 1),
-                    color=(1, 1, 1, 1), font_size=sp(17), bold=True
+                    color=(1, 1, 1, 1), font_size=sp(19), bold=True
                 )
                 del_btn.bind(on_release=make_delete_fn(fp, fname, popup_ref))
 
@@ -211,9 +211,9 @@ class ParticipantsScreen(Screen):
             outer.add_widget(scroll)
 
         close_btn = Button(
-            text='Close', size_hint_y=None, height=dp(58),
+            text='Close', size_hint_y=None, height=dp(72),
             background_normal='', background_color=(0.95, 0.6, 0.1, 1),
-            color=(0.1, 0.1, 0.1, 1), bold=True, font_size=sp(20)
+            color=(0.1, 0.1, 0.1, 1), bold=True, font_size=sp(22)
         )
         outer.add_widget(close_btn)
 
@@ -240,7 +240,7 @@ class ParticipantsScreen(Screen):
         with layout.canvas.before:
             Color(0.1, 0.1, 0.1, 0.88)
             self._toast_rect = RoundedRectangle(pos=layout.pos, size=layout.size, radius=[10])
-        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=sp(17), size_hint=(1, 1))
+        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=sp(19), size_hint=(1, 1))
         layout.add_widget(lbl)
         layout.bind(pos=lambda inst, val: setattr(self._toast_rect, 'pos', val))
         layout.bind(size=lambda inst, val: setattr(self._toast_rect, 'size', val))
@@ -386,9 +386,9 @@ class ExpensesScreen(Screen):
 
         checkboxes = {}
         for p in participants:
-            row = BoxLayout(orientation='horizontal', size_hint_y=None, height=dp(56))
-            cb = CheckBox(size_hint_x=None, width=dp(56), active=(p in self._omitted_members))
-            lbl = Label(text=p, color=(1, 1, 1, 1), font_size=sp(19), bold=True,
+            row = BoxLayout(orientation='horizontal', size_hint_y=None, height=dp(66))
+            cb = CheckBox(size_hint_x=None, width=dp(66), active=(p in self._omitted_members))
+            lbl = Label(text=p, color=(1, 1, 1, 1), font_size=sp(22), bold=True,
                         halign='left', valign='middle')
             lbl.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
             row.add_widget(cb)
@@ -399,11 +399,11 @@ class ExpensesScreen(Screen):
         scroll.add_widget(inner)
         outer.add_widget(scroll)
 
-        done_btn = Button(text='Done – Add Expense', size_hint_y=None, height=dp(60),
+        done_btn = Button(text='Done – Add Expense', size_hint_y=None, height=dp(72),
                           background_normal='',
                           background_color=(0.95, 0.6, 0.1, 1),
                           color=(0.1, 0.1, 0.1, 1),
-                          bold=True, font_size=sp(19))
+                          bold=True, font_size=sp(22))
         outer.add_widget(done_btn)
 
         popup = Popup(title='Select members to omit',
@@ -430,7 +430,7 @@ class ExpensesScreen(Screen):
         with layout.canvas.before:
             Color(0.1, 0.1, 0.1, 0.88)
             self._toast_rect = RoundedRectangle(pos=layout.pos, size=layout.size, radius=[10])
-        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=sp(17),
+        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=sp(19),
                     size_hint=(1, 1))
         layout.add_widget(lbl)
         layout.bind(pos=lambda inst, val: setattr(self._toast_rect, 'pos', val))
@@ -456,8 +456,8 @@ class ExpensesScreen(Screen):
             btn = Button(
                 text=f"  {idx+1}. {exp.item}  ₹{exp.amount:.2f}  by {exp.paid_by}{omit_str}{notes_str}",
                 background_normal='', background_color=bg_color,
-                color=(0.96, 0.96, 0.86, 1), font_size=sp(16), bold=True,
-                size_hint_y=None, height=dp(64), halign='left', valign='middle'
+                color=(0.96, 0.96, 0.86, 1), font_size=sp(18), bold=True,
+                size_hint_y=None, height=dp(72), halign='left', valign='middle'
             )
             btn.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
             btn.bind(on_release=lambda inst, i=idx: self.select_expense(i))
@@ -567,14 +567,14 @@ class SettlementScreen(Screen):
                 else:
                     txt = f"{p}  PAY: ₹{-bal:.2f}"
                     bg = (0.8, 0.3, 0.3, 1)
-                btn = Button(text=txt, font_size=sp(18), bold=True,
+                btn = Button(text=txt, font_size=sp(20), bold=True,
                              background_normal='', background_color=bg,
-                             color=(1, 1, 1, 1), size_hint_y=None, height=dp(50))
+                             color=(1, 1, 1, 1), size_hint_y=None, height=dp(64))
                 box.add_widget(btn)
             if all_settled:
                 box.add_widget(Label(text='All settled! No payments needed.',
-                                     color=(0.96, 0.96, 0.86, 1), font_size=sp(18),
-                                     size_hint_y=None, height=dp(50)))
+                                     color=(0.96, 0.96, 0.86, 1), font_size=sp(20),
+                                     size_hint_y=None, height=dp(64)))
             self.show_pie_chart(expenses)
         except Exception as e:
             self.show_toast(f'Error: {str(e)}')
@@ -587,9 +587,9 @@ class SettlementScreen(Screen):
                 chart_box.add_widget(Label(
                     text='Chart unavailable in this build.',
                     color=(0.96, 0.96, 0.86, 1),
-                    font_size=sp(16),
+                    font_size=sp(18),
                     size_hint_y=None,
-                    height=dp(40),
+                    height=dp(50),
                 ))
                 return
             if not expenses:
@@ -639,7 +639,7 @@ class SettlementScreen(Screen):
         with layout.canvas.before:
             Color(0.1, 0.1, 0.1, 0.88)
             self._toast_rect = RoundedRectangle(pos=layout.pos, size=layout.size, radius=[10])
-        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=sp(17), size_hint=(1, 1))
+        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=sp(19), size_hint=(1, 1))
         layout.add_widget(lbl)
         layout.bind(pos=lambda inst, val: setattr(self._toast_rect, 'pos', val))
         layout.bind(size=lambda inst, val: setattr(self._toast_rect, 'size', val))
