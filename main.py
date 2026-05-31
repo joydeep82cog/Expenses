@@ -15,14 +15,19 @@ from kivy.uix.filechooser import FileChooserListView
 from kivy.uix.button import Button
 from kivy.clock import Clock
 from kivy.uix.image import Image
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import io
 from kivy.core.image import Image as CoreImage
 from kivy.uix.floatlayout import FloatLayout
 from kivy.graphics import Color, RoundedRectangle
 from kivy.core.window import Window
+
+try:
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    HAS_MATPLOTLIB = True
+except Exception:
+    HAS_MATPLOTLIB = False
 
 TRIP_ARCHIVE_DIR = os.path.join(os.path.dirname(__file__), 'Trip Archive')
 
@@ -137,15 +142,15 @@ class ParticipantsScreen(Screen):
             def make_load_fn(fp, popup_holder):
                 def do_load(inst):
                     try:
-                        df_summary, df_expenses = load_trip_from_excel(fp)
-                        self.participants = list(df_summary['Name'].unique())
+                        loaded_participants, loaded_expenses = load_trip_from_excel(fp)
+                        self.participants = loaded_participants
                         expenses_screen = self.manager.get_screen('expenses')
                         expenses_screen.expenses = []
-                        for _, row in df_expenses.iterrows():
-                            omitted = row['Omitted'].split(', ') if isinstance(row['Omitted'], str) and row['Omitted'] else []
-                            notes = str(row['Notes']) if 'Notes' in row.index and not (isinstance(row['Notes'], float) and row['Notes'] != row['Notes']) else ''
+                        for row in loaded_expenses:
+                            omitted = row['Omitted'].split(', ') if isinstance(row.get('Omitted'), str) and row.get('Omitted') else []
+                            notes = str(row.get('Notes', '')) if row.get('Notes') else ''
                             expenses_screen.expenses.append(
-                                Expense(row['Item'], row['Amount'], row['Paid By'], omitted, notes)
+                                Expense(row.get('Item', ''), row.get('Amount', 0), row.get('Paid By', ''), omitted, notes)
                             )
                         self.ids.trip_name_input.text = os.path.splitext(os.path.basename(fp))[0]
                         self.update_participants_list()
@@ -577,6 +582,15 @@ class SettlementScreen(Screen):
         try:
             chart_box = self.ids.chart_box
             chart_box.clear_widgets()
+            if not HAS_MATPLOTLIB:
+                chart_box.add_widget(Label(
+                    text='Chart unavailable in this build.',
+                    color=(0.96, 0.96, 0.86, 1),
+                    font_size=15,
+                    size_hint_y=None,
+                    height=36,
+                ))
+                return
             if not expenses:
                 return
             paid_by = {}
