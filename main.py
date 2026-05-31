@@ -387,7 +387,7 @@ class ExpensesScreen(Screen):
         checkboxes = {}
         for p in participants:
             row = BoxLayout(orientation='horizontal', size_hint_y=None, height=dp(66))
-            cb = CheckBox(size_hint_x=None, width=dp(60), active=(p in self._omitted_members))
+            cb = CheckBox(size_hint_x=None, width=dp(66), active=(p in self._omitted_members))
             lbl = Label(text=p, color=(1, 1, 1, 1), font_size=sp(22), bold=True,
                         halign='left', valign='middle')
             lbl.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
