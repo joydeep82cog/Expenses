@@ -1,0 +1,546 @@
+# Kivy UI for Expense Tracking App
+
+<CoverScreen>:
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 0.18, 0.22, 0.25, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        # Full-screen watermark image
+        Image:
+            id: cover_image
+            source: root.image_path
+            opacity: 0.38
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 1, 1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        # App name – bold, centred, silver
+        Label:
+            text: 'Track Your Expense'
+            font_size: 62
+            bold: True
+            color: 0.92, 0.92, 0.92, 1
+            outline_color: 0, 0, 0, 1
+            outline_width: 2
+            size_hint: 1, None
+            height: 100
+            pos_hint: {'center_x': 0.5, 'center_y': 0.70}
+        # Thin amber underline bar
+        Widget:
+            size_hint: 0.55, None
+            height: 3
+            pos_hint: {'center_x': 0.5, 'center_y': 0.61}
+            canvas:
+                Color:
+                    rgba: 0.95, 0.6, 0.1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        # Author label
+        Label:
+            text: 'by Joydeep Bhattacharyya'
+            font_size: 26
+            bold: True
+            color: 0.95, 0.6, 0.1, 1
+            size_hint: 1, None
+            height: 50
+            pos_hint: {'center_x': 0.5, 'center_y': 0.52}
+        # Tagline
+        Label:
+            text: 'Plan smart. Travel free.'
+            font_size: 20
+            italic: True
+            color: 0.85, 0.85, 0.80, 0.85
+            size_hint: 1, None
+            height: 40
+            pos_hint: {'center_x': 0.5, 'center_y': 0.43}
+        # Loading indicator bar (decorative)
+        Widget:
+            size_hint: 0.4, None
+            height: 4
+            pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+            canvas:
+                Color:
+                    rgba: 0.4, 0.45, 0.5, 0.5
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [2,]
+        Widget:
+            id: progress_bar
+            size_hint: 0, None
+            height: 4
+            pos_hint: {'x': 0.3, 'center_y': 0.25}
+            canvas:
+                Color:
+                    rgba: 0.95, 0.6, 0.1, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [2,]
+        Label:
+            text: 'Loading...'
+            font_size: 16
+            color: 0.7, 0.7, 0.65, 1
+            size_hint: 1, None
+            height: 30
+            pos_hint: {'center_x': 0.5, 'center_y': 0.19}
+
+<ParticipantsScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0.18, 0.22, 0.25, 1  # dark slate
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 50
+            Label:
+                text: 'Where are you going?'
+                font_size: 32
+                bold: True
+                color: 1,1,1,1
+        TextInput:
+            id: trip_name_input
+            hint_text: 'Enter trip name'
+            background_normal: ''
+            background_color: 0.18, 0.22, 0.25, 1
+            foreground_color: 1,1,1,1
+            padding: 10
+            font_size: 22
+            height: 48
+            multiline: False
+            write_tab: False
+            size_hint_y: None
+            pos_hint: {'center_x': 0.5}
+        Label:
+            text: 'Enter Participants'
+            font_size: 24
+            bold: True
+            color: 0.85,0.85,0.85,1  # silver on dark
+        TextInput:
+            id: participant_input
+            hint_text: 'Enter name and press Add'
+            background_normal: ''
+            background_color: 0.96, 0.96, 0.86, 1
+            foreground_color: 0,0,0,1
+            padding: 10
+            font_size: 18
+            height: 40
+            multiline: False
+            write_tab: False
+        Button:
+            text: 'Add Participant'
+            background_normal: ''
+            background_color: 0.95, 0.6, 0.1, 1
+            color: 0.1, 0.1, 0.1, 1
+            font_size: 18
+            bold: True
+            size_hint: None, None
+            size: self.texture_size[0]+32, self.texture_size[1]+32
+            pos_hint: {'center_x': 0.5}
+            canvas.before:
+                Color:
+                    rgba: 0.75, 0.42, 0.0, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10,]
+            canvas.after:
+                Color:
+                    rgba: 1, 1, 0.6, 0.3
+                RoundedRectangle:
+                    pos: self.x, self.y + self.height * 0.5
+                    size: self.width, self.height * 0.5
+                    radius: [10,]
+            on_press: root.add_participant(participant_input.text)
+        ScrollView:
+            size_hint_y: 1
+            do_scroll_x: False
+            do_scroll_y: True
+            BoxLayout:
+                id: participants_list
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+        Button:
+            text: 'Next: Add Expenses'
+            background_normal: ''
+            background_color: 0.95, 0.6, 0.1, 1
+            color: 0.1, 0.1, 0.1, 1
+            font_size: 18
+            bold: True
+            size_hint: None, None
+            size: self.texture_size[0]+32, self.texture_size[1]+32
+            pos_hint: {'center_x': 0.5}
+            canvas.before:
+                Color:
+                    rgba: 0.75, 0.42, 0.0, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10,]
+            canvas.after:
+                Color:
+                    rgba: 1, 1, 0.6, 0.3
+                RoundedRectangle:
+                    pos: self.x, self.y + self.height * 0.5
+                    size: self.width, self.height * 0.5
+                    radius: [10,]
+            on_press: root.go_to_expenses()
+        Button:
+            text: 'Load Archived Trip'
+            background_normal: ''
+            background_color: 0.95, 0.6, 0.1, 1
+            color: 0.1, 0.1, 0.1, 1
+            font_size: 20
+            bold: True
+            size_hint: None, None
+            size: self.texture_size[0]+40, self.texture_size[1]+36
+            pos_hint: {'center_x': 0.5}
+            canvas.before:
+                Color:
+                    rgba: 0.75, 0.42, 0.0, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [12,]
+            canvas.after:
+                Color:
+                    rgba: 1, 1, 0.6, 0.35
+                RoundedRectangle:
+                    pos: self.x, self.y + self.height * 0.5
+                    size: self.width, self.height * 0.5
+                    radius: [12,]
+            on_press: root.load_trip()
+        Button:
+            text: 'Start New Trip'
+            background_normal: ''
+            background_color: 0.95, 0.6, 0.1, 1
+            color: 0.1, 0.1, 0.1, 1
+            font_size: 18
+            bold: True
+            size_hint: None, None
+            size: self.texture_size[0]+32, self.texture_size[1]+32
+            pos_hint: {'center_x': 0.5}
+            canvas.before:
+                Color:
+                    rgba: 0.75, 0.42, 0.0, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10,]
+            canvas.after:
+                Color:
+                    rgba: 1, 1, 0.6, 0.3
+                RoundedRectangle:
+                    pos: self.x, self.y + self.height * 0.5
+                    size: self.width, self.height * 0.5
+                    radius: [10,]
+            on_press: root.start_new_trip()
+
+<ExpensesScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0.18, 0.22, 0.25, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Add Expenses'
+            font_size: 24
+            bold: True
+            color: 0.85,0.85,0.85,1
+        TextInput:
+            id: item_input
+            hint_text: 'Expense item'
+            background_normal: ''
+            background_color: 0.96, 0.96, 0.86, 1
+            foreground_color: 0,0,0,1
+            padding: 10
+            font_size: 18
+            size_hint_y: None
+            height: 44
+            multiline: False
+            write_tab: False
+        TextInput:
+            id: amount_input
+            hint_text: 'Amount'
+            input_filter: 'float'
+            background_normal: ''
+            background_color: 0.96, 0.96, 0.86, 1
+            foreground_color: 0,0,0,1
+            padding: 10
+            font_size: 18
+            size_hint_y: None
+            height: 44
+            multiline: False
+            write_tab: False
+        TextInput:
+            id: notes_input
+            hint_text: 'Notes (optional)'
+            background_normal: ''
+            background_color: 0.96, 0.96, 0.86, 1
+            foreground_color: 0,0,0,1
+            padding: 10
+            font_size: 18
+            size_hint_y: None
+            height: 44
+            multiline: False
+            write_tab: False
+        Spinner:
+            id: paid_by_spinner
+            text: 'Paid by'
+            values: []
+            background_normal: ''
+            background_color: 0.96, 0.96, 0.86, 1
+            color: 0,0,0,1
+            font_size: 18
+            size_hint_y: None
+            height: 44
+        Button:
+            id: omit_btn
+            text: 'Omit members (tap to select)'
+            background_normal: ''
+            background_color: 0.95, 0.6, 0.1, 1
+            color: 0.1, 0.1, 0.1, 1
+            font_size: 16
+            bold: True
+            size_hint_y: None
+            height: 44
+            canvas.before:
+                Color:
+                    rgba: 0.75, 0.42, 0.0, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [8,]
+            canvas.after:
+                Color:
+                    rgba: 1, 1, 0.6, 0.3
+                RoundedRectangle:
+                    pos: self.x, self.y + self.height * 0.5
+                    size: self.width, self.height * 0.5
+                    radius: [8,]
+            on_press: root.open_omit_popup()
+        Button:
+            text: 'Add Expense'
+            background_normal: ''
+            background_color: 0.95, 0.6, 0.1, 1
+            color: 0.1, 0.1, 0.1, 1
+            font_size: 18
+            bold: True
+            size_hint: None, None
+            size: self.texture_size[0]+32, self.texture_size[1]+32
+            pos_hint: {'center_x': 0.5}
+            canvas.before:
+                Color:
+                    rgba: 0.75, 0.42, 0.0, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10,]
+            canvas.after:
+                Color:
+                    rgba: 1, 1, 0.6, 0.3
+                RoundedRectangle:
+                    pos: self.x, self.y + self.height * 0.5
+                    size: self.width, self.height * 0.5
+                    radius: [10,]
+            on_press: root.add_expense(item_input.text, amount_input.text, notes_input.text)
+        ScrollView:
+            size_hint_y: 1
+            size_hint_x: 1
+            do_scroll_x: False
+            do_scroll_y: True
+            bar_width: 8
+            bar_color: 0.95, 0.6, 0.1, 1
+            bar_inactive_color: 0.6, 0.4, 0.1, 0.5
+            BoxLayout:
+                id: expenses_list
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            spacing: 8
+            padding: 4
+            Button:
+                text: 'Delete Selected'
+                background_normal: ''
+                background_color: 0.95, 0.6, 0.1, 1
+                color: 0.1, 0.1, 0.1, 1
+                font_size: 16
+                bold: True
+                canvas.before:
+                    Color:
+                        rgba: 0.75, 0.42, 0.0, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10,]
+                canvas.after:
+                    Color:
+                        rgba: 1, 1, 0.6, 0.3
+                    RoundedRectangle:
+                        pos: self.x, self.y + self.height * 0.5
+                        size: self.width, self.height * 0.5
+                        radius: [10,]
+                on_press: root.delete_selected_expense()
+            Button:
+                text: 'Modify Selected'
+                background_normal: ''
+                background_color: 0.95, 0.6, 0.1, 1
+                color: 0.1, 0.1, 0.1, 1
+                font_size: 16
+                bold: True
+                canvas.before:
+                    Color:
+                        rgba: 0.75, 0.42, 0.0, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10,]
+                canvas.after:
+                    Color:
+                        rgba: 1, 1, 0.6, 0.3
+                    RoundedRectangle:
+                        pos: self.x, self.y + self.height * 0.5
+                        size: self.width, self.height * 0.5
+                        radius: [10,]
+                on_press: root.modify_selected_expense()
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            spacing: 8
+            padding: 4
+            Button:
+                text: 'Back to Add Members'
+                background_normal: ''
+                background_color: 0.95, 0.6, 0.1, 1
+                color: 0.1, 0.1, 0.1, 1
+                font_size: 16
+                bold: True
+                canvas.before:
+                    Color:
+                        rgba: 0.75, 0.42, 0.0, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10,]
+                canvas.after:
+                    Color:
+                        rgba: 1, 1, 0.6, 0.3
+                    RoundedRectangle:
+                        pos: self.x, self.y + self.height * 0.5
+                        size: self.width, self.height * 0.5
+                        radius: [10,]
+                on_press: root.go_back()
+            Button:
+                text: 'Next: Settlement'
+                background_normal: ''
+                background_color: 0.95, 0.6, 0.1, 1
+                color: 0.1, 0.1, 0.1, 1
+                font_size: 16
+                bold: True
+                canvas.before:
+                    Color:
+                        rgba: 0.75, 0.42, 0.0, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10,]
+                canvas.after:
+                    Color:
+                        rgba: 1, 1, 0.6, 0.3
+                    RoundedRectangle:
+                        pos: self.x, self.y + self.height * 0.5
+                        size: self.width, self.height * 0.5
+                        radius: [10,]
+                on_press: root.go_to_settlement()
+
+<SettlementScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0.18, 0.22, 0.25, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Settlement Summary'
+            font_size: 24
+            bold: True
+            color: 0.85,0.85,0.85,1
+        BoxLayout:
+            id: chart_box
+            orientation: 'vertical'
+            size_hint_y: None
+            height: 250
+        ScrollView:
+            BoxLayout:
+                id: settlement_list
+                orientation: 'vertical'
+        Button:
+            text: 'Settle & Archive'
+            background_normal: ''
+            background_color: 0.95, 0.6, 0.1, 1
+            color: 0.1, 0.1, 0.1, 1
+            font_size: 18
+            bold: True
+            size_hint: None, None
+            size: self.texture_size[0]+32, self.texture_size[1]+32
+            pos_hint: {'center_x': 0.5}
+            canvas.before:
+                Color:
+                    rgba: 0.75, 0.42, 0.0, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10,]
+            canvas.after:
+                Color:
+                    rgba: 1, 1, 0.6, 0.3
+                RoundedRectangle:
+                    pos: self.x, self.y + self.height * 0.5
+                    size: self.width, self.height * 0.5
+                    radius: [10,]
+            on_press: root.settle_and_archive()
+        Button:
+            text: 'Back to Start'
+            background_normal: ''
+            background_color: 0.95, 0.6, 0.1, 1
+            color: 0.1, 0.1, 0.1, 1
+            font_size: 18
+            bold: True
+            size_hint: None, None
+            size: self.texture_size[0]+32, self.texture_size[1]+32
+            pos_hint: {'center_x': 0.5}
+            canvas.before:
+                Color:
+                    rgba: 0.75, 0.42, 0.0, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10,]
+            canvas.after:
+                Color:
+                    rgba: 1, 1, 0.6, 0.3
+                RoundedRectangle:
+                    pos: self.x, self.y + self.height * 0.5
+                    size: self.width, self.height * 0.5
+                    radius: [10,]
+            on_press: root.go_back()
