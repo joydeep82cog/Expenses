@@ -567,7 +567,7 @@ class SettlementScreen(Screen):
                 else:
                     txt = f"{p}  PAY: ₹{-bal:.2f}"
                     bg = (0.8, 0.3, 0.3, 1)
-                btn = Button(text=txt, font_size=17, bold=True,
+                btn = Button(text=txt, font_size=sp(18), bold=True,
                              background_normal='', background_color=bg,
                              color=(1, 1, 1, 1), size_hint_y=None, height=dp(50))
                 box.add_widget(btn)
