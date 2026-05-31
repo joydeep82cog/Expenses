@@ -23,6 +23,7 @@ fullscreen = 0
 android.api = 34
 android.minapi = 24
 android.ndk = 25b
+android.ant_path = /usr/share/ant
 android.accept_sdk_license = True
 
 # Keep app data private and writable across Android versions.
