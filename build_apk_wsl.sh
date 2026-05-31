@@ -17,7 +17,7 @@ if ! apt-cache show "$TINFO_PKG" >/dev/null 2>&1; then
 fi
 
 sudo apt-get install -y \
-  git zip unzip openjdk-17-jdk python3-pip python3-venv \
+  ant git zip unzip openjdk-17-jdk python3-pip python3-venv \
   autoconf libtool pkg-config zlib1g-dev libncurses5-dev \
   libncursesw5-dev "$TINFO_PKG" cmake libffi-dev libssl-dev
 
