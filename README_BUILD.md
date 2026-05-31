@@ -1,12 +1,18 @@
-# 📱 How to Build the Android APK
+# How to Build the Android APK
 
-## Option 1 – GitHub Actions (Recommended, easiest – no Linux needed)
+This repository now includes all Android build files:
 
-> Build happens in the cloud for free. You just download the finished APK.
+- `buildozer.spec`
+- `build_apk_wsl.sh`
+- `.github/workflows/android-apk.yml`
 
-### Steps
+## Option 1 - GitHub Actions (Recommended)
 
-1. **Create a GitHub repository** (free account at https://github.com)
+1. Push to your GitHub repository.
+2. Open the Actions tab for your repository.
+3. Run or wait for the `Build Android APK` workflow.
+4. Download the `TrackYourExpense-debug-apk` artifact.
+5. Extract and install the `.apk` file on Android.
 
 2. **Push this project folder to your repo:**
    ```powershell
@@ -17,9 +23,9 @@
    git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
    git push -u origin main
    ```
+## Option 2 - WSL2 Local Build
 
-3. **GitHub Actions will automatically start building** when you push.  
-   Go to: `https://github.com/YOUR_USERNAME/YOUR_REPO/actions`
+Use Ubuntu in WSL2 and run:
 
 4. **Download the APK:**  
    - Click the latest workflow run  
@@ -76,15 +82,21 @@
 import os
 os.chdir('/content/Expenses')  # adjust path
 !buildozer -v android debug
+```bash
+cd /mnt/e/Joydeep/MyApps/Expenses
+chmod +x build_apk_wsl.sh
+./build_apk_wsl.sh
 ```
 
-3. Download the APK from the `bin/` folder in Colab's file browser.
+Output APK location:
 
----
+```bash
+bin/*.apk
+```
 
-## Notes
+## Build Notes
 
-- **First build** downloads Android SDK/NDK (~2 GB) – subsequent builds are faster due to caching.
-- The APK produced is a **debug APK** – suitable for personal use and testing.
-- For a **release APK** (for Play Store), change `android debug` to `android release` in the build command and sign it with a keystore.
-- The `Trip Archive/` folder on Android will be stored in the app's private storage directory.
+- First build can take a long time because SDK/NDK/toolchains are downloaded.
+- This project uses `openpyxl` for Excel operations to keep Android packaging simpler.
+- `matplotlib` charts are optional at runtime. If unavailable in a build, the app still runs and shows a fallback message instead of a chart.
+- For release builds, use `buildozer android release` and sign the APK/AAB with your keystore.

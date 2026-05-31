@@ -1,4 +1,10 @@
 # Kivy UI for Expense Tracking App
+#:import dp kivy.metrics.dp
+#:import sp kivy.metrics.sp
+#:set page_padding dp(18)
+#:set page_spacing dp(14)
+#:set input_height dp(56)
+#:set button_height dp(58)
 
 <CoverScreen>:
     FloatLayout:
@@ -92,6 +98,8 @@
 <ParticipantsScreen>:
     BoxLayout:
         orientation: 'vertical'
+        padding: page_padding, dp(18), page_padding, dp(18)
+        spacing: page_spacing
         canvas.before:
             Color:
                 rgba: 0.18, 0.22, 0.25, 1  # dark slate
@@ -101,10 +109,10 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
-            height: 50
+            height: dp(64)
             Label:
                 text: 'Where are you going?'
-                font_size: 32
+                font_size: sp(30)
                 bold: True
                 color: 1,1,1,1
         TextInput:
@@ -113,16 +121,18 @@
             background_normal: ''
             background_color: 0.18, 0.22, 0.25, 1
             foreground_color: 1,1,1,1
-            padding: 10
-            font_size: 22
-            height: 48
+            padding: dp(14), dp(16)
+            font_size: sp(22)
+            height: input_height
             multiline: False
             write_tab: False
             size_hint_y: None
             pos_hint: {'center_x': 0.5}
         Label:
             text: 'Enter Participants'
-            font_size: 24
+            size_hint_y: None
+            height: dp(34)
+            font_size: sp(22)
             bold: True
             color: 0.85,0.85,0.85,1  # silver on dark
         TextInput:
@@ -131,21 +141,21 @@
             background_normal: ''
             background_color: 0.96, 0.96, 0.86, 1
             foreground_color: 0,0,0,1
-            padding: 10
-            font_size: 18
-            height: 40
+            padding: dp(14), dp(16)
+            font_size: sp(20)
+            height: input_height
             multiline: False
             write_tab: False
+            size_hint_y: None
         Button:
             text: 'Add Participant'
             background_normal: ''
             background_color: 0.95, 0.6, 0.1, 1
             color: 0.1, 0.1, 0.1, 1
-            font_size: 18
+            font_size: sp(20)
             bold: True
-            size_hint: None, None
-            size: self.texture_size[0]+32, self.texture_size[1]+32
-            pos_hint: {'center_x': 0.5}
+            size_hint_y: None
+            height: button_height
             canvas.before:
                 Color:
                     rgba: 0.75, 0.42, 0.0, 1
@@ -175,11 +185,10 @@
             background_normal: ''
             background_color: 0.95, 0.6, 0.1, 1
             color: 0.1, 0.1, 0.1, 1
-            font_size: 18
+            font_size: sp(20)
             bold: True
-            size_hint: None, None
-            size: self.texture_size[0]+32, self.texture_size[1]+32
-            pos_hint: {'center_x': 0.5}
+            size_hint_y: None
+            height: button_height
             canvas.before:
                 Color:
                     rgba: 0.75, 0.42, 0.0, 1
@@ -200,11 +209,10 @@
             background_normal: ''
             background_color: 0.95, 0.6, 0.1, 1
             color: 0.1, 0.1, 0.1, 1
-            font_size: 20
+            font_size: sp(20)
             bold: True
-            size_hint: None, None
-            size: self.texture_size[0]+40, self.texture_size[1]+36
-            pos_hint: {'center_x': 0.5}
+            size_hint_y: None
+            height: button_height
             canvas.before:
                 Color:
                     rgba: 0.75, 0.42, 0.0, 1
@@ -225,11 +233,10 @@
             background_normal: ''
             background_color: 0.95, 0.6, 0.1, 1
             color: 0.1, 0.1, 0.1, 1
-            font_size: 18
+            font_size: sp(20)
             bold: True
-            size_hint: None, None
-            size: self.texture_size[0]+32, self.texture_size[1]+32
-            pos_hint: {'center_x': 0.5}
+            size_hint_y: None
+            height: button_height
             canvas.before:
                 Color:
                     rgba: 0.75, 0.42, 0.0, 1
@@ -249,6 +256,8 @@
 <ExpensesScreen>:
     BoxLayout:
         orientation: 'vertical'
+        padding: page_padding, dp(18), page_padding, dp(18)
+        spacing: page_spacing
         canvas.before:
             Color:
                 rgba: 0.18, 0.22, 0.25, 1
@@ -257,7 +266,9 @@
                 size: self.size
         Label:
             text: 'Add Expenses'
-            font_size: 24
+            size_hint_y: None
+            height: dp(36)
+            font_size: sp(24)
             bold: True
             color: 0.85,0.85,0.85,1
         TextInput:
@@ -266,10 +277,10 @@
             background_normal: ''
             background_color: 0.96, 0.96, 0.86, 1
             foreground_color: 0,0,0,1
-            padding: 10
-            font_size: 18
+            padding: dp(14), dp(16)
+            font_size: sp(20)
             size_hint_y: None
-            height: 44
+            height: input_height
             multiline: False
             write_tab: False
         TextInput:
@@ -279,10 +290,10 @@
             background_normal: ''
             background_color: 0.96, 0.96, 0.86, 1
             foreground_color: 0,0,0,1
-            padding: 10
-            font_size: 18
+            padding: dp(14), dp(16)
+            font_size: sp(20)
             size_hint_y: None
-            height: 44
+            height: input_height
             multiline: False
             write_tab: False
         TextInput:
@@ -291,10 +302,10 @@
             background_normal: ''
             background_color: 0.96, 0.96, 0.86, 1
             foreground_color: 0,0,0,1
-            padding: 10
-            font_size: 18
+            padding: dp(14), dp(16)
+            font_size: sp(20)
             size_hint_y: None
-            height: 44
+            height: input_height
             multiline: False
             write_tab: False
         Spinner:
@@ -304,19 +315,19 @@
             background_normal: ''
             background_color: 0.96, 0.96, 0.86, 1
             color: 0,0,0,1
-            font_size: 18
+            font_size: sp(20)
             size_hint_y: None
-            height: 44
+            height: input_height
         Button:
             id: omit_btn
             text: 'Omit members (tap to select)'
             background_normal: ''
             background_color: 0.95, 0.6, 0.1, 1
             color: 0.1, 0.1, 0.1, 1
-            font_size: 16
+            font_size: sp(18)
             bold: True
             size_hint_y: None
-            height: 44
+            height: input_height
             canvas.before:
                 Color:
                     rgba: 0.75, 0.42, 0.0, 1
@@ -337,11 +348,10 @@
             background_normal: ''
             background_color: 0.95, 0.6, 0.1, 1
             color: 0.1, 0.1, 0.1, 1
-            font_size: 18
+            font_size: sp(20)
             bold: True
-            size_hint: None, None
-            size: self.texture_size[0]+32, self.texture_size[1]+32
-            pos_hint: {'center_x': 0.5}
+            size_hint_y: None
+            height: button_height
             canvas.before:
                 Color:
                     rgba: 0.75, 0.42, 0.0, 1
@@ -373,15 +383,14 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
-            height: 60
-            spacing: 8
-            padding: 4
+            height: dp(66)
+            spacing: dp(12)
             Button:
                 text: 'Delete Selected'
                 background_normal: ''
                 background_color: 0.95, 0.6, 0.1, 1
                 color: 0.1, 0.1, 0.1, 1
-                font_size: 16
+                font_size: sp(18)
                 bold: True
                 canvas.before:
                     Color:
@@ -403,7 +412,7 @@
                 background_normal: ''
                 background_color: 0.95, 0.6, 0.1, 1
                 color: 0.1, 0.1, 0.1, 1
-                font_size: 16
+                font_size: sp(18)
                 bold: True
                 canvas.before:
                     Color:
@@ -423,15 +432,14 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
-            height: 60
-            spacing: 8
-            padding: 4
+            height: dp(66)
+            spacing: dp(12)
             Button:
                 text: 'Back to Add Members'
                 background_normal: ''
                 background_color: 0.95, 0.6, 0.1, 1
                 color: 0.1, 0.1, 0.1, 1
-                font_size: 16
+                font_size: sp(18)
                 bold: True
                 canvas.before:
                     Color:
@@ -453,7 +461,7 @@
                 background_normal: ''
                 background_color: 0.95, 0.6, 0.1, 1
                 color: 0.1, 0.1, 0.1, 1
-                font_size: 16
+                font_size: sp(18)
                 bold: True
                 canvas.before:
                     Color:
@@ -474,6 +482,8 @@
 <SettlementScreen>:
     BoxLayout:
         orientation: 'vertical'
+        padding: page_padding, dp(18), page_padding, dp(18)
+        spacing: page_spacing
         canvas.before:
             Color:
                 rgba: 0.18, 0.22, 0.25, 1
@@ -482,28 +492,32 @@
                 size: self.size
         Label:
             text: 'Settlement Summary'
-            font_size: 24
+            size_hint_y: None
+            height: dp(36)
+            font_size: sp(24)
             bold: True
             color: 0.85,0.85,0.85,1
         BoxLayout:
             id: chart_box
             orientation: 'vertical'
             size_hint_y: None
-            height: 250
+            height: dp(280)
         ScrollView:
+            do_scroll_x: False
             BoxLayout:
                 id: settlement_list
                 orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
         Button:
             text: 'Settle & Archive'
             background_normal: ''
             background_color: 0.95, 0.6, 0.1, 1
             color: 0.1, 0.1, 0.1, 1
-            font_size: 18
+            font_size: sp(20)
             bold: True
-            size_hint: None, None
-            size: self.texture_size[0]+32, self.texture_size[1]+32
-            pos_hint: {'center_x': 0.5}
+            size_hint_y: None
+            height: button_height
             canvas.before:
                 Color:
                     rgba: 0.75, 0.42, 0.0, 1
@@ -524,11 +538,10 @@
             background_normal: ''
             background_color: 0.95, 0.6, 0.1, 1
             color: 0.1, 0.1, 0.1, 1
-            font_size: 18
+            font_size: sp(20)
             bold: True
-            size_hint: None, None
-            size: self.texture_size[0]+32, self.texture_size[1]+32
-            pos_hint: {'center_x': 0.5}
+            size_hint_y: None
+            height: button_height
             canvas.before:
                 Color:
                     rgba: 0.75, 0.42, 0.0, 1

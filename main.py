@@ -15,14 +15,20 @@ from kivy.uix.filechooser import FileChooserListView
 from kivy.uix.button import Button
 from kivy.clock import Clock
 from kivy.uix.image import Image
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import io
 from kivy.core.image import Image as CoreImage
 from kivy.uix.floatlayout import FloatLayout
 from kivy.graphics import Color, RoundedRectangle
 from kivy.core.window import Window
+from kivy.metrics import dp, sp
+
+try:
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    HAS_MATPLOTLIB = True
+except Exception:
+    HAS_MATPLOTLIB = False
 
 TRIP_ARCHIVE_DIR = os.path.join(os.path.dirname(__file__), 'Trip Archive')
 
@@ -103,8 +109,8 @@ class ParticipantsScreen(Screen):
         box = self.ids.participants_list
         box.clear_widgets()
         for p in self.participants:
-            lbl = Label(text=p, color=(0.96, 0.96, 0.86, 1), font_size=18,
-                        size_hint_y=None, height=40)
+            lbl = Label(text=p, color=(0.96, 0.96, 0.86, 1), font_size=sp(20),
+                        size_hint_y=None, height=dp(44))
             box.add_widget(lbl)
 
     def load_trip(self):
@@ -120,32 +126,32 @@ class ParticipantsScreen(Screen):
 
         popup_ref = [None]  # always defined before use
 
-        outer = BoxLayout(orientation='vertical', spacing=6, padding=8)
+        outer = BoxLayout(orientation='vertical', spacing=dp(10), padding=dp(12))
 
         if not files:
             outer.add_widget(Label(
                 text='No archived trips found.\nArchive a trip first using\n"Settle & Archive".',
-                color=(0.96, 0.96, 0.86, 1), font_size=18,
+                color=(0.96, 0.96, 0.86, 1), font_size=sp(20),
                 bold=True, halign='center', valign='middle',
-                size_hint_y=None, height=120
+                size_hint_y=None, height=dp(140)
             ))
         else:
             scroll = ScrollView(size_hint=(1, 1))
-            inner = BoxLayout(orientation='vertical', size_hint_y=None, spacing=4)
+            inner = BoxLayout(orientation='vertical', size_hint_y=None, spacing=dp(8))
             inner.bind(minimum_height=inner.setter('height'))
 
             def make_load_fn(fp, popup_holder):
                 def do_load(inst):
                     try:
-                        df_summary, df_expenses = load_trip_from_excel(fp)
-                        self.participants = list(df_summary['Name'].unique())
+                        loaded_participants, loaded_expenses = load_trip_from_excel(fp)
+                        self.participants = loaded_participants
                         expenses_screen = self.manager.get_screen('expenses')
                         expenses_screen.expenses = []
-                        for _, row in df_expenses.iterrows():
-                            omitted = row['Omitted'].split(', ') if isinstance(row['Omitted'], str) and row['Omitted'] else []
-                            notes = str(row['Notes']) if 'Notes' in row.index and not (isinstance(row['Notes'], float) and row['Notes'] != row['Notes']) else ''
+                        for row in loaded_expenses:
+                            omitted = row['Omitted'].split(', ') if isinstance(row.get('Omitted'), str) and row.get('Omitted') else []
+                            notes = str(row.get('Notes', '')) if row.get('Notes') else ''
                             expenses_screen.expenses.append(
-                                Expense(row['Item'], row['Amount'], row['Paid By'], omitted, notes)
+                                Expense(row.get('Item', ''), row.get('Amount', 0), row.get('Paid By', ''), omitted, notes)
                             )
                         self.ids.trip_name_input.text = os.path.splitext(os.path.basename(fp))[0]
                         self.update_participants_list()
@@ -171,28 +177,28 @@ class ParticipantsScreen(Screen):
 
             for fname in files:
                 fp = os.path.join(TRIP_ARCHIVE_DIR, fname)
-                row = BoxLayout(orientation='horizontal', size_hint_y=None, height=52, spacing=6)
+                row = BoxLayout(orientation='horizontal', size_hint_y=None, height=dp(64), spacing=dp(10))
 
                 name_lbl = Button(
                     text=f'  {os.path.splitext(fname)[0]}',
                     background_normal='', background_color=(0.22, 0.27, 0.32, 1),
-                    color=(0.96, 0.96, 0.86, 1), font_size=16, bold=True,
-                    halign='left', valign='middle', size_hint_x=0.6
+                    color=(0.96, 0.96, 0.86, 1), font_size=sp(18), bold=True,
+                    halign='left', valign='middle', size_hint_x=0.56
                 )
                 name_lbl.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
                 name_lbl.bind(on_release=make_load_fn(fp, popup_ref))
 
                 load_btn = Button(
-                    text='Load', size_hint_x=0.2,
+                    text='Load', size_hint_x=0.22,
                     background_normal='', background_color=(0.95, 0.6, 0.1, 1),
-                    color=(0.1, 0.1, 0.1, 1), font_size=15, bold=True
+                    color=(0.1, 0.1, 0.1, 1), font_size=sp(17), bold=True
                 )
                 load_btn.bind(on_release=make_load_fn(fp, popup_ref))
 
                 del_btn = Button(
-                    text='Delete', size_hint_x=0.2,
+                    text='Delete', size_hint_x=0.22,
                     background_normal='', background_color=(0.82, 0.18, 0.18, 1),
-                    color=(1, 1, 1, 1), font_size=15, bold=True
+                    color=(1, 1, 1, 1), font_size=sp(17), bold=True
                 )
                 del_btn.bind(on_release=make_delete_fn(fp, fname, popup_ref))
 
@@ -205,14 +211,14 @@ class ParticipantsScreen(Screen):
             outer.add_widget(scroll)
 
         close_btn = Button(
-            text='Close', size_hint_y=None, height=52,
+            text='Close', size_hint_y=None, height=dp(58),
             background_normal='', background_color=(0.95, 0.6, 0.1, 1),
-            color=(0.1, 0.1, 0.1, 1), bold=True, font_size=18
+            color=(0.1, 0.1, 0.1, 1), bold=True, font_size=sp(20)
         )
         outer.add_widget(close_btn)
 
         popup = Popup(title='Archived Trips', title_color=(1, 1, 1, 1),
-                      content=outer, size_hint=(0.92, 0.85),
+                      content=outer, size_hint=(0.94, 0.88),
                       background_color=(0.18, 0.22, 0.25, 1))
         popup_ref[0] = popup
         close_btn.bind(on_release=popup.dismiss)
@@ -229,12 +235,12 @@ class ParticipantsScreen(Screen):
         self.show_toast('New trip started!')
 
     def show_toast(self, msg):
-        layout = FloatLayout(size_hint=(None, None), size=(360, 50),
+        layout = FloatLayout(size_hint=(None, None), size=(dp(420), dp(58)),
                              pos_hint={'center_x': 0.5, 'top': 0.98})
         with layout.canvas.before:
             Color(0.1, 0.1, 0.1, 0.88)
             self._toast_rect = RoundedRectangle(pos=layout.pos, size=layout.size, radius=[10])
-        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=16, size_hint=(1, 1))
+        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=sp(17), size_hint=(1, 1))
         layout.add_widget(lbl)
         layout.bind(pos=lambda inst, val: setattr(self._toast_rect, 'pos', val))
         layout.bind(size=lambda inst, val: setattr(self._toast_rect, 'size', val))
@@ -373,16 +379,16 @@ class ExpensesScreen(Screen):
         amount_text = self.ids.amount_input.text
         notes_text = self.ids.notes_input.text
 
-        outer = BoxLayout(orientation='vertical', spacing=6, padding=10)
+        outer = BoxLayout(orientation='vertical', spacing=dp(8), padding=dp(12))
         scroll = ScrollView(size_hint=(1, 1))
-        inner = BoxLayout(orientation='vertical', size_hint_y=None, spacing=4)
+        inner = BoxLayout(orientation='vertical', size_hint_y=None, spacing=dp(6))
         inner.bind(minimum_height=inner.setter('height'))
 
         checkboxes = {}
         for p in participants:
-            row = BoxLayout(orientation='horizontal', size_hint_y=None, height=48)
-            cb = CheckBox(size_hint_x=None, width=48, active=(p in self._omitted_members))
-            lbl = Label(text=p, color=(1, 1, 1, 1), font_size=18, bold=True,
+            row = BoxLayout(orientation='horizontal', size_hint_y=None, height=dp(56))
+            cb = CheckBox(size_hint_x=None, width=dp(56), active=(p in self._omitted_members))
+            lbl = Label(text=p, color=(1, 1, 1, 1), font_size=sp(19), bold=True,
                         halign='left', valign='middle')
             lbl.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
             row.add_widget(cb)
@@ -393,17 +399,17 @@ class ExpensesScreen(Screen):
         scroll.add_widget(inner)
         outer.add_widget(scroll)
 
-        done_btn = Button(text='Done – Add Expense', size_hint_y=None, height=52,
+        done_btn = Button(text='Done – Add Expense', size_hint_y=None, height=dp(60),
                           background_normal='',
                           background_color=(0.95, 0.6, 0.1, 1),
                           color=(0.1, 0.1, 0.1, 1),
-                          bold=True, font_size=18)
+                          bold=True, font_size=sp(19))
         outer.add_widget(done_btn)
 
         popup = Popup(title='Select members to omit',
                       title_color=(1, 1, 1, 1),
                       content=outer,
-                      size_hint=(0.88, 0.78),
+                      size_hint=(0.90, 0.82),
                       background_color=(0.18, 0.22, 0.25, 1))
 
         def on_done(inst):
@@ -419,12 +425,12 @@ class ExpensesScreen(Screen):
         popup.open()
 
     def show_toast(self, msg):
-        layout = FloatLayout(size_hint=(None, None), size=(360, 50),
+        layout = FloatLayout(size_hint=(None, None), size=(dp(420), dp(58)),
                              pos_hint={'center_x': 0.5, 'top': 0.98})
         with layout.canvas.before:
             Color(0.1, 0.1, 0.1, 0.88)
             self._toast_rect = RoundedRectangle(pos=layout.pos, size=layout.size, radius=[10])
-        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=16,
+        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=sp(17),
                     size_hint=(1, 1))
         layout.add_widget(lbl)
         layout.bind(pos=lambda inst, val: setattr(self._toast_rect, 'pos', val))
@@ -450,8 +456,8 @@ class ExpensesScreen(Screen):
             btn = Button(
                 text=f"  {idx+1}. {exp.item}  ₹{exp.amount:.2f}  by {exp.paid_by}{omit_str}{notes_str}",
                 background_normal='', background_color=bg_color,
-                color=(0.96, 0.96, 0.86, 1), font_size=15, bold=True,
-                size_hint_y=None, height=52, halign='left', valign='middle'
+                color=(0.96, 0.96, 0.86, 1), font_size=sp(16), bold=True,
+                size_hint_y=None, height=dp(64), halign='left', valign='middle'
             )
             btn.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
             btn.bind(on_release=lambda inst, i=idx: self.select_expense(i))
@@ -561,14 +567,14 @@ class SettlementScreen(Screen):
                 else:
                     txt = f"{p}  PAY: ₹{-bal:.2f}"
                     bg = (0.8, 0.3, 0.3, 1)
-                btn = Button(text=txt, font_size=17, bold=True,
+                btn = Button(text=txt, font_size=sp(18), bold=True,
                              background_normal='', background_color=bg,
-                             color=(1, 1, 1, 1), size_hint_y=None, height=44)
+                             color=(1, 1, 1, 1), size_hint_y=None, height=dp(50))
                 box.add_widget(btn)
             if all_settled:
                 box.add_widget(Label(text='All settled! No payments needed.',
-                                     color=(0.96, 0.96, 0.86, 1), font_size=18,
-                                     size_hint_y=None, height=44))
+                                     color=(0.96, 0.96, 0.86, 1), font_size=sp(18),
+                                     size_hint_y=None, height=dp(50)))
             self.show_pie_chart(expenses)
         except Exception as e:
             self.show_toast(f'Error: {str(e)}')
@@ -577,6 +583,15 @@ class SettlementScreen(Screen):
         try:
             chart_box = self.ids.chart_box
             chart_box.clear_widgets()
+            if not HAS_MATPLOTLIB:
+                chart_box.add_widget(Label(
+                    text='Chart unavailable in this build.',
+                    color=(0.96, 0.96, 0.86, 1),
+                    font_size=sp(16),
+                    size_hint_y=None,
+                    height=dp(40),
+                ))
+                return
             if not expenses:
                 return
             paid_by = {}
@@ -593,7 +608,7 @@ class SettlementScreen(Screen):
             plt.savefig(buf, format='png', bbox_inches='tight', facecolor=fig.get_facecolor())
             buf.seek(0)
             im = CoreImage(buf, ext='png')
-            img = Image(texture=im.texture, size_hint=(None, None), size=(220, 220),
+            img = Image(texture=im.texture, size_hint=(None, None), size=(dp(240), dp(240)),
                         pos_hint={'center_x': 0.5})
             chart_box.add_widget(img)
             plt.close(fig)
@@ -619,12 +634,12 @@ class SettlementScreen(Screen):
             self.show_toast(f'Error archiving: {str(e)}')
 
     def show_toast(self, msg):
-        layout = FloatLayout(size_hint=(None, None), size=(360, 50),
+        layout = FloatLayout(size_hint=(None, None), size=(dp(420), dp(58)),
                              pos_hint={'center_x': 0.5, 'top': 0.98})
         with layout.canvas.before:
             Color(0.1, 0.1, 0.1, 0.88)
             self._toast_rect = RoundedRectangle(pos=layout.pos, size=layout.size, radius=[10])
-        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=16, size_hint=(1, 1))
+        lbl = Label(text=msg, color=(1, 1, 1, 1), bold=True, font_size=sp(17), size_hint=(1, 1))
         layout.add_widget(lbl)
         layout.bind(pos=lambda inst, val: setattr(self._toast_rect, 'pos', val))
         layout.bind(size=lambda inst, val: setattr(self._toast_rect, 'size', val))
